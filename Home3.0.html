@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--HTML5 doctype-->
+<html>
+
+<head>
+
+    <title>Taste of Dupont</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="./build/icons.css" />
+    <link rel="stylesheet" type="text/css" href="./build/af.ui.css" />
+
+     <script type="text/javascript" charset="utf-8" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./build/appframework.ui.js"></script>
+   
+   // The Google Browser API key was removed - can be added back for additional functionality
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+	
+	<script>
+		var initialLocation;
+		var dupontcircle = new google.maps.LatLng(38.9097624,-77.0446891);
+		var loc0=new google.maps.LatLng(38.909831, -77.044684);
+		var browserSupportFlag =  new Boolean();
+		
+		function initialize(){
+			var mapProp = {
+				center:{lat: 38.909831, lng: -77.044684},
+				zoom:15,
+				mapTypeControl: false,
+				streetViewControl: false,
+				navigationControl: true,
+				scrollwheel: true,
+				navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+				mapTypeId:google.maps.MapTypeId.ROADMAP,
+			};
+			var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);		
+			setMarkers(map);
+			
+			// Try W3C Geolocation (Preferred)
+			if(navigator.geolocation) {
+				browserSupportFlag = true;
+				navigator.geolocation.getCurrentPosition(function(position) {
+				  initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+				  map.setCenter(initialLocation);
+				}, 
+				function() {
+				  handleNoGeolocation(browserSupportFlag);
+				});
+			}
+			// Browser doesn't support Geolocation
+			else {
+				browserSupportFlag = false;
+				handleNoGeolocation(browserSupportFlag);
+			}
+
+			function handleNoGeolocation(errorFlag) {
+				if (errorFlag == true) {
+				  alert("Geolocation service failed.");
+				  initialLocation = loc0;
+				} else {
+				  alert("Your browser doesn't support geolocation. We've placed you in Dupont Circle.");
+				  initialLocation = dupontcircle;
+				}
+				map.setCenter(initialLocation);
+			}
+		}
+// Data for the markers consisting of a name, a LatLng and a zIndex for the
+// order in which these markers should display on top of each other.
+
+
+		var locs = [
+			['Duke’s Grocery', 38.9102, -77.03823, 8, 'Appetizer'],
+			['Panas Gourmet Empanadas', 38.90987, -77.04622, 3, 'Appetizer'],
+			['Brick Lane', 38.91233, -77.03871, 10, 'Cocktail'],
+			['Beefsteak', 38.91077, -77.04443, 4, 'Entrée'],
+			['James Hoban', 38.90898, -77.04441, 1, 'Entrée'],
+			['My Way Deli', 38.91355, -77.04604, 6, 'Entrée'],
+			['Ruth’s Chris Steak House', 38.91426, -77.04571, 7, 'Entrée'],
+			['Sacrificial Lamb', 38.91244, -77.03885, 9, 'Entrée'],
+			['Darlington House', 38.91163, -77.04516, 5, 'Sangria Tasting'],
+			['1 West Dupont Circle Wine', 38.90943, -77.04548, 2, 'Wine Tasting'],
+			['Rosebud Liquor', 38.91297, -77.03818, 11, 'Wine Tasting']
+
+		];
+		
+		//trying dynamic icons - use root "https://chart.googleapis.com/chart?" - see https://developers.google.com/chart/infographics/docs/dynamic_icons?csw=1#introduction		
+		var pins = {
+			'Appetizer':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=restaurant|DB4436',
+			'Cocktail':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=bar|FFDD5E',
+			'Entrée':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=restaurant|D698AD',
+			'Sangria Tasting':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=bar|F9F7A6',
+			'Wine Tasting':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=bar|C6A4CF',
+			'Information':'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=info|FFFFFF'
+		};
+		
+		function setMarkers(map) {
+			// Adds markers to the map.
+			for (var i = 0; i < locs.length; i++) {
+				var loc = locs[i];
+				var marker = new google.maps.Marker({
+				  position: {lat: loc[1], lng: loc[2]},
+				  map: map,
+				  title: loc[0],				  
+				  zIndex: loc[3],
+				  icon: pins[loc[4]],
+				  //shape: balloon,
+				  //label: "A"				  
+			  });
+			}
+			
+			var marker=new google.maps.Marker({
+				position:loc0,
+				map: map,
+				icon:'HDCMS_logo.png',
+				title:'Historic Dupont Circle Main Streets',
+				zIndex: 0
+			});
+	
+		}
+	google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+	
+</head>
+
+
+<body>
+<div class="view active" id="mainview">
+	<header>
+		<a class="backButton back">
+		::before
+		"Back"
+		</a>
+		<h1 class>My Header</h1>
+	</header>
+
+	<div class="pages">
+		<div class="panel" data-title="Main" id="main" selected="true">
+			<p id="main_info" class>
+			Historic Dupont Circle Main Streets is excited that you are joining us for this year's Taste of Dupont.  We encourage you to walk from restaurant to tavern with your master ticket and discover the area's signature appetizers, entr&eacute;es, drinks, and desserts!
+			</p>
+			<ul class="list">
+				</li>
+				<li>
+					<a href="#googleMap" class>
+						Map
+					</a>
+				</li>
+				<li>
+					<a href="#items" class>
+						Check-in
+					</a>
+				</li>
+				<li>
+					<a href="#time" class>
+						Time Remaining
+					</a>
+				</li>
+				<li>
+					<a href="#survey" class>
+						Survey
+					</a>
+				</li>
+				</ul>
+		</div>
+		
+<!-- 		<div class="panel" data-title="Ticket" id="evite">
+			<img src='https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Duke’s Grocery' align="middle"> 
+        </div>	 -->
+
+		<div class="panel" data-title="Map" id="googleMap">
+        </div>	
+
+		<div class="panel" data-title="Check-in" id="items">
+			<p align="middle" font="bold">
+				Click each location to display Check-in Ticket
+			</p>
+			<ul class="list inset">
+				<li class="divider">Appetizer</li>
+				<li><a href="#item1">Duke&rsquo;s Grocery</a></li>
+				<li><a href="#item2">Panas Gourmet Empanadas</a></li>
+				<li class="divider">Cocktail</li>
+				<li><a href="#item3">Brick Lane</a></li>
+				<li class="divider">Entr&eacute;e</li>
+				<li><a href="#item4">Beefsteak</a></li>
+				<li><a href="#item5">James Hoban</a></li>
+				<li><a href="#item6">My Way Deli</a></li>
+				<li><a href="#item7">Ruth&rsquo;s Chris Steak House</a></li>
+				<li><a href="#item8">Sacrificial Lamb</a></li>
+				<li class="divider">Sangria Tasting</li>
+				<li><a href="#item9">Darlington House</a></li>
+				<li class="divider">Wine Tasting</li>
+				<li><a href="#item10">1 West Dupont Circle Wine</a></li>
+				<li><a href="#item11">Rosebud Liquor</a></li>
+			</ul>
+		</div>
+
+		<!--Detail View Pages for each list item-->
+		<div class="panel" data-title="Item 1" id="item1" data-footer="none">
+			<p>This is detail view for Item 1</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Duke’s Grocery"> 
+		</div>
+
+		<div class="panel" data-title="Item 2" id="item2" data-footer="none">
+			<p>This is detail view for Item 2</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Panas Gourmet Empanadas"> 
+		</div>
+
+		<div class="panel" data-title="Item 3" id="item3" data-footer="none">
+			<p>This is detail view for Item 3</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Brick Lane"> 
+		</div>
+
+		<div class="panel" data-title="Item 4" id="item4" data-footer="none">
+			<p>This is detail view for Item 4</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Beefsteak"> 
+		</div>
+
+		<div class="panel" data-title="Item 5" id="item5" data-footer="none">
+			<p>This is detail view for Item 5</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-James Hoban"> 
+		</div>
+
+		<div class="panel" data-title="Item 6" id="item6" data-footer="none">
+			<p>This is detail view for Item 6</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-My Way Deli"> 
+		</div>
+
+		<div class="panel" data-title="Item 7" id="item7" data-footer="none">
+			<p>This is detail view for Item 7</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Ruth’s Chris Steak House"> 
+		</div>
+
+		<div class="panel" data-title="Item 8" id="item8" data-footer="none">
+			<p>This is detail view for Item 8</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Sacrificial Lamb"> 
+		</div>
+
+		<div class="panel" data-title="Item 9" id="item9" data-footer="none">
+			<p>This is detail view for Item 9</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Darlington House"> 
+		</div>
+
+		<div class="panel" data-title="Item 10" id="item10" data-footer="none">
+			<p>This is detail view for Item 10</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-1 West Dupont Circle Wine"> 
+		</div>
+
+		<div class="panel" data-title="Item 11" id="item11" data-footer="none">
+			<p>This is detail view for Item 11</p>
+			<img src="https://chart.googleapis.com/chart?cht=qr&chs=250&chl=LKJDLJGGlkK5456-Rosebud Liquor"> 
+		</div>
+		
+		<div class="panel" title="Time Remaining" id="time">
+			<script type="text/javascript">
+				//###################################################################
+				// Author: ricocheting.com
+				// Version: v3.0
+				// Date: 2014-09-05
+				// Description: displays the amount of time until the "dateFuture" entered below.
+
+				var CDown = function() {
+					this.state=0;// if initialized
+					this.counts=[];// array holding countdown date objects and id to print to {d:new Date(2013,11,18,18,54,36), id:"countbox1"}
+					this.interval=null;// setInterval object
+				}
+
+				CDown.prototype = {
+					init: function(){
+						this.state=1;
+						var self=this;
+						this.interval=window.setInterval(function(){self.tick();}, 1000);
+					},
+					add: function(date,id){
+						this.counts.push({d:date,id:id});
+						this.tick();
+						if(this.state==0) this.init();
+					},
+					expire: function(idxs){
+						for(var x in idxs) {
+							this.display(this.counts[idxs[x]], "Now!");
+							this.counts.splice(idxs[x], 1);
+						}
+					},
+					format: function(r){
+						var out="";
+						if(r.d != 0){out += r.d +" "+((r.d==1)?"day":"days")+", ";}
+						out += (r.h<=9?'0':'')+r.h +" "+((r.h==1)?"hour":"hours")+", ";
+						out += (r.m<=9?'0':'')+r.m +" "+((r.m==1)?"min":"mins")+", ";
+						out += (r.s<=9?'0':'')+r.s +" "+((r.s==1)?"sec":"secs")+", ";
+
+						return out.substr(0,out.length-2);
+					},
+					math: function(work){
+						var	y=w=d=h=m=s=ms=0;
+
+						ms=(""+((work%1000)+1000)).substr(1,3);
+						work=Math.floor(work/1000);//kill the "milliseconds" so just secs
+
+						y=Math.floor(work/31536000);//years (no leapyear support)
+						w=Math.floor(work/604800);//weeks
+						d=Math.floor(work/86400);//days
+						work=work%86400;
+
+						h=Math.floor(work/3600);//hours
+						work=work%3600;
+
+						m=Math.floor(work/60);//minutes
+						work=work%60;
+
+						s=Math.floor(work);//seconds
+
+						return {y:y,w:w,d:d,h:h,m:m,s:s,ms:ms};
+					},
+					tick: function(){
+						var now=(new Date()).getTime(),
+							expired=[],cnt=0,amount=0;
+
+						if(this.counts)
+						for(var idx=0,n=this.counts.length; idx<n; ++idx){
+							cnt=this.counts[idx];
+							amount=cnt.d.getTime()-now;//calc milliseconds between dates
+
+							// if time is already past
+							if(amount<0){
+								expired.push(idx);
+							}
+							// date is still good
+							else{
+								this.display(cnt, this.format(this.math(amount)));
+							}
+						}
+
+						// deal with any expired
+						if(expired.length>0) this.expire(expired);
+
+						// if no active counts, stop updating
+						if(this.counts.length==0) window.clearTimeout(this.interval);
+						
+					},
+					display: function(cnt,msg){
+						document.getElementById(cnt.id).innerHTML=msg;
+					}
+				};
+
+				window.onload=function(){
+					var cdown = new CDown();
+
+					cdown.add(new Date(2017,5,01,22,00,00), "countbox1");
+				};
+			</script>
+			<div  id="countbox1" align="middle" valign = "middle"></div>	
+        </div>	
+		<div class="panel" data-title="Survey" id="survey">
+<!--             <div class="formGroupHead">Radios</div>
+ -->
+			<form>
+				<div class="input-group">
+					<label>1. What is your annual household income:</label>
+					<input id="aaaa" type="radio" name="test" value="1">
+					<label for="aaaa">Under $49,999</label>
+					<input id="bbbb" type="radio" name="test" value="2">
+					<label for="bbbb">$50,000-$99,999</label>
+					<input id="cccc" type="radio" name="test" value="3">
+					<label for="cccc">$100,000-$124,999</label>
+					<input id="dddd" type="radio" name="test" value="4">
+					<label for="dddd">$125,000-149,999</label>
+					<input id="eeee" type="radio" name="test" value="5">
+					<label for="eeee">$150,000 and above</label>					
+					<br style="clear:both">
+					<input type="submit" class="button" value="Submit" style='float:right;'>
+				</div>
+			</form>
+			
+<!-- 			<div class="formGroupHead">Checkbox and Button</div>
+ -->			
+			<form>
+				<div class="input-group">
+					<label>2.How did you hear about the Taste of Dupont? <br>Check all that apply.</label>
+					<input id="aaaaa" type="checkbox" name="test2" value="1">
+					<label for="aaaaa">City Paper</label>
+					<input id="bbbbb" type="checkbox" name="test2" value="2">
+					<label for="bbbbb">Intowner</label>
+					<input id="ccccc" type="checkbox" name="test2" value="3">
+					<label for="ccccc">Dupont Current</label>
+					<input id="ddddd" type="checkbox" name="test2" value="4">
+					<label for="ddddd">Eventbrite</label>
+					<input id="eeeee" type="checkbox" name="test2" value="5">
+					<label for="eeeee">FaceBook</label>
+					<input id="fffff" type="checkbox" name="test2" value="6">
+					<label for="fffff">Other:________________________</label>
+					<br style="clear:both">
+					<input type="submit" class="button" value="Submit" style='float:right;'>
+				</div>
+			</form>
+		</div>		
+	</div>
+	
+	<footer>
+		<a href="#main" class="icon home" data-transition="slide" data-ignore-pressed="true">
+		Main
+		</a>
+		<a href="#googleMap" class="icon location" data-transition="slide" data-ignore-pressed="true">
+		Map
+		</a>
+		<a href="#items" class="icon user" data-transition="slide" data-ignore-pressed="true">
+		Check-in
+		</a>
+		<a href="#time" class="icon clock" data-transition="slide" data-ignore-pressed="true">
+		Time
+		</a>
+		<a href="#survey" class="icon clock" data-transition="slide" data-ignore-pressed="true">
+		Survey
+		</a>
+	</footer>
+</div>
+
+
+</body>
+</html>
